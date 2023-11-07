@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Todo</title>
+    <style>
+        /* Simple styling for the form */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        form {
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        input[type=text],
+        input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* Added this to ensure padding doesn't affect width */
+        }
+
+        input[type=submit] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Add Todo</h1>
+    <form id="add-todo-form">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="author" placeholder="Author" required>
+        <textarea id="content" placeholder="Content" required></textarea>
+        <input type="submit" value="Add Todo">
+    </form>
+    <script>
+        document.getElementById('add-todo-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const titleValue = document.getElementById('title').value;
+            const authorValue = document.getElementById('author').value;
+            const contentValue = document.getElementById('content').value;
+
+            fetch('http://localhost:5000/todos/createtodo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: titleValue,
+                    author: authorValue,
+                    content: contentValue
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(() => {
+                alert('Todo added successfully!');
+                window.location.href = 'index.html'; // Redirect after add
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding todo.');
+            });
+        });
+    </script>
+</body>
+
+</html>
