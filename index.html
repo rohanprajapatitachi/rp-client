@@ -1,15 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RP-client</title>
-    <link href="style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
 
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            background-color: #F9F9F9;
+        }
+    </style>
+    <title>Todo List</title>
 </head>
-<body>
-    <h1>RP-client</h1>
 
-  <script src="script.js"></script> 
+<body>
+    <h1>Todo List</h1>
+    <ul id="todo-list"></ul>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const todoList = document.getElementById("todo-list");
+            // Fetch todos from the API
+            fetch("http://localhost:3000/todos/get-all-todos")
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("rohan ---->", data);
+                    // Iterate over the todos and create list items
+                    data.forEach((todo) => {
+                        const listItem = document.createElement("li");
+                        listItem.innerHTML = `
+                            <h2> hsdflflhfds ${todo.title}</h2>
+                            <p><strong>Author:</strong> ${todo.author}</p>
+                            <p>${todo.content}</p>
+                        `;
+                        todoList.appendChild(listItem);
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
+    </script>
 </body>
+
 </html>
