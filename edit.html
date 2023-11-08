@@ -64,10 +64,10 @@
             }
 
             // Fetch the current data of the Todo and populate the form fields
-            fetch(`http://localhost:3000/todos/${id}`)
+            fetch(`http://localhost:5000/todos/single-todo-by-id/${id}`)
                 .then(response => response.json())
                 .then(todo => {
-                    document.getElementById('id').value = todo.id;
+                    document.getElementById('id').value = todo._id;
                     document.getElementById('title').value = todo.title;
                     document.getElementById('author').value = todo.author;
                     document.getElementById('content').value = todo.content;
@@ -86,7 +86,7 @@
             const authorValue = document.getElementById('author').value;
             const contentValue = document.getElementById('content').value;
 
-            fetch(`http://localhost:3000/todos/${idValue}`, {
+            fetch(`http://localhost:5000/todos/update-todo/${idValue}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
