@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Todo</title>
+    <style>
+        /* Simple styling for the form */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        form {
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        input[type=text],
+        input[type=submit],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            background-color: #f0ad4e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Edit Todo</h1>
+    <form id="edit-todo-form">
+        <input type="hidden" id="id">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="author" placeholder="Author" required>
+        <textarea id="content" placeholder="Content" required></textarea>
+        <input type="submit" value="Update Todo">
+    </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const id = localStorage.getItem('editingTodoId'); // Get the ID from localStorage
+            if (!id) {
+                alert("Todo ID not found.");
+                return window.location.href = 'index.html';
+            }
+
+            // Fetch the current data of the Todo and populate the form fields
+            fetch(`http://localhost:3000/todos/${id}`)
+                .then(response => response.json())
+                .then(todo => {
+                    document.getElementById('id').value = todo.id;
+                    document.getElementById('title').value = todo.title;
+                    document.getElementById('author').value = todo.author;
+                    document.getElementById('content').value = todo.content;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load todo data.');
+                });
+        });
+
+        document.getElementById('edit-todo-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const idValue = document.getElementById('id').value;
+            const titleValue = document.getElementById('title').value;
+            const authorValue = document.getElementById('author').value;
+            const contentValue = document.getElementById('content').value;
+
+            fetch(`http://localhost:3000/todos/${idValue}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: titleValue,
+                    author: authorValue,
+                    content: contentValue
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(() => {
+                alert('Todo updated successfully!');
+                window.location.href = 'index.html'; // Redirect after update
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating todo.');
+            });
+        });
+    </script>
+</body>
+
+</html>
