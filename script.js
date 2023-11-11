@@ -26,10 +26,15 @@
     }
 
     window.deleteTodo = (id) => {
-        localStorage.setItem('editingTodoId', id);
         if (!confirm("Are you sure you want to delete this todo?")) {
             return;
         }
+
+        if(!id) {
+            console.log('Id is missing');
+            return;
+        }
+
         fetch(`http://localhost:3001/todos/delete-todo/${id}`, { method: 'DELETE' })
             .then(response => {
                 if (!response.ok) {
@@ -37,7 +42,7 @@
                 }
                 return response.json();
             })
-            .then(() => fetchTodos()) // Refresh list after delete
+            .then(() => fetchTodos())// Refresh list after delete
             .catch(error => {
                 console.error('Error:', error);
                 alert("There was an error deleting the todo.");
